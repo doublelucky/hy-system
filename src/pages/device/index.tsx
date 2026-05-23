@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Table, Button, Input, Select, Space, Tag, Card, App, Modal, Form } from 'antd';
+import { Table, Button, Input, Select, Space, Tag, Card, App, Modal, Form, Alert } from 'antd';
 import { SearchOutlined, ReloadOutlined, ApiOutlined, SendOutlined, CloudUploadOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getDeviceList, getDeviceLogs, pushMessageToDevices, pushUpdateToDevices } from '../../api/device';
@@ -51,6 +51,7 @@ export default function DeviceList() {
 
   const handleSearch = () => {
     setPage(1);
+    setSelectedRowKeys([]);
     fetchData(1, keyword, statusFilter);
   };
 
@@ -58,7 +59,14 @@ export default function DeviceList() {
     setKeyword('');
     setStatusFilter(undefined);
     setPage(1);
+    setSelectedRowKeys([]);
     fetchData(1, '', undefined);
+  };
+
+  const handleSelectionChange = (newKeys: React.Key[]) => {
+    const currentPageIds = data.map((d) => d.id);
+    const otherPageKeys = selectedRowKeys.filter((k) => !currentPageIds.includes(k as string));
+    setSelectedRowKeys([...otherPageKeys, ...newKeys]);
   };
 
   const handlePageChange = (p: number) => {
@@ -197,11 +205,26 @@ export default function DeviceList() {
             </Button>
           </Space>
         }>
+        {selectedRowKeys.length > 0 && (
+          <Alert
+            message={
+              <span>
+                已选择 <strong>{selectedRowKeys.length}</strong> 台设备（含跨页选择），
+                <a onClick={() => setSelectedRowKeys([])} style={{ marginLeft: 8 }}>清除全部</a>
+              </span>
+            }
+            type="info"
+            showIcon
+            closable
+            onClose={() => setSelectedRowKeys([])}
+            style={{ marginBottom: 12 }}
+          />
+        )}
         <Table
           rowKey="id"
           rowSelection={{
             selectedRowKeys,
-            onChange: setSelectedRowKeys,
+            onChange: handleSelectionChange,
           }}
           columns={columns}
           dataSource={data}

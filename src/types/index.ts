@@ -70,6 +70,7 @@ export interface Firmware {
   id: string;
   firmwareType: FirmwareType;
   name: string;
+  model: string;
   version: string;
   fileName: string;
   fileSize: number;
