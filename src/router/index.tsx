@@ -5,6 +5,9 @@ import Login from '../pages/login';
 import Dashboard from '../pages/dashboard';
 import DeviceList from '../pages/device';
 import DeviceDetail from '../pages/device/detail';
+import VersionManagement from '../pages/version';
+import FirmwareManagement from '../pages/firmware';
+import MediaManagement from '../pages/media';
 
 export const router = createHashRouter([
   {
@@ -34,6 +37,18 @@ export const router = createHashRouter([
       {
         path: 'device/:id',
         element: <DeviceDetail />,
+      },
+      {
+        path: 'version',
+        element: <VersionManagement />,
+      },
+      {
+        path: 'firmware',
+        element: <FirmwareManagement />,
+      },
+      {
+        path: 'media',
+        element: <MediaManagement />,
       },
     ],
   },

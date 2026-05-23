@@ -7,6 +7,9 @@ import {
   UserOutlined,
   LogoutOutlined,
   AppstoreOutlined,
+  DeploymentUnitOutlined,
+  BugOutlined,
+  PictureOutlined,
 } from '@ant-design/icons';
 import { useAuthStore } from '../stores/authStore';
 import { useAppStore } from '../stores/appStore';
@@ -23,6 +26,21 @@ const menuItems = [
     key: '/device',
     icon: <AppstoreOutlined />,
     label: '设备管理',
+  },
+  {
+    key: '/version',
+    icon: <DeploymentUnitOutlined />,
+    label: '版本管理',
+  },
+  {
+    key: '/firmware',
+    icon: <BugOutlined />,
+    label: '固件管理',
+  },
+  {
+    key: '/media',
+    icon: <PictureOutlined />,
+    label: '媒体资源',
   },
 ];
 

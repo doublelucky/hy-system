@@ -41,3 +41,68 @@ export interface PaginatedData<T> {
   page: number;
   pageSize: number;
 }
+
+export type AppType = 'android' | 'windows' | 'linux';
+
+export interface AppVersion {
+  id: string;
+  appType: AppType;
+  version: string;
+  fileName: string;
+  fileSize: number;
+  downloadCount: number;
+  releaseDate: string;
+  changelog: string;
+  status: 'latest' | 'stable' | 'archived';
+  minOsVersion: string;
+  md5: string;
+}
+
+export const appTypeLabels: Record<AppType, string> = {
+  android: 'Android APK',
+  windows: 'Windows EXE',
+  linux: 'Linux DEB',
+};
+
+export type FirmwareType = 'mcu' | 'fpga';
+
+export interface Firmware {
+  id: string;
+  firmwareType: FirmwareType;
+  name: string;
+  version: string;
+  fileName: string;
+  fileSize: number;
+  compatibleDevices: string;
+  releaseDate: string;
+  changelog: string;
+  status: 'latest' | 'stable' | 'archived';
+  md5: string;
+}
+
+export const firmwareTypeLabels: Record<FirmwareType, string> = {
+  mcu: 'MCU 固件',
+  fpga: 'FPGA 固件',
+};
+
+export interface MediaFolder {
+  id: string;
+  name: string;
+  createdAt: string;
+  fileCount: number;
+}
+
+export type MediaType = 'image' | 'video' | 'audio' | 'document';
+
+export interface MediaFile {
+  id: string;
+  folderId: string;
+  name: string;
+  type: MediaType;
+  size: number;
+  url: string;
+  uploadDate: string;
+  width?: number;
+  height?: number;
+  duration?: string;
+}
