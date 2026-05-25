@@ -10,6 +10,7 @@ import {
   DeploymentUnitOutlined,
   BugOutlined,
   PictureOutlined,
+  FundViewOutlined,
 } from '@ant-design/icons';
 import { useAuthStore } from '../stores/authStore';
 import { useAppStore } from '../stores/appStore';
@@ -41,6 +42,11 @@ const menuItems = [
     key: '/media',
     icon: <PictureOutlined />,
     label: '媒体资源',
+  },
+  {
+    key: '/slide',
+    icon: <FundViewOutlined />,
+    label: 'Slide 管理',
   },
 ];
 

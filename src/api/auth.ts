@@ -1,3 +1,10 @@
+/*
+ * @Author: chenhanping97@gmail.com
+ * @Date: 2026-05-23 09:42:16
+ * @LastEditors: chenhanping97@gmail.com
+ * @LastEditTime: 2026-05-23 12:00:07
+ * @FilePath: \heyiot-system\src\api\auth.ts
+ */
 import type { ApiResponse, LoginParams, UserInfo } from '../types';
 
 export async function loginApi(params: LoginParams): Promise<ApiResponse<{ token: string; userInfo: UserInfo }>> {

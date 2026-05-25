@@ -107,3 +107,15 @@ export interface MediaFile {
   height?: number;
   duration?: string;
 }
+
+export interface Slide {
+  id: string;
+  title: string;
+  subtitle: string;
+  imageUrl: string;
+  link: string;
+  sortOrder: number;
+  status: 'published' | 'draft';
+  createdAt: string;
+  updatedAt: string;
+}

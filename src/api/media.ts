@@ -47,10 +47,20 @@ export async function getFolders(): Promise<ApiResponse<MediaFolder[]>> {
   return { code: 0, data: folders, message: 'ok' };
 }
 
-export async function getMediaFiles(folderId?: string): Promise<ApiResponse<MediaFile[]>> {
+export async function getMediaFiles(
+  folderId?: string,
+  page = 1,
+  pageSize = 8,
+): Promise<ApiResponse<{ list: MediaFile[]; total: number; hasMore: boolean }>> {
   await new Promise((resolve) => setTimeout(resolve, 300));
   const list = folderId ? files.filter((f) => f.folderId === folderId) : files;
-  return { code: 0, data: list, message: 'ok' };
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize;
+  return {
+    code: 0,
+    data: { list: list.slice(start, end), total: list.length, hasMore: end < list.length },
+    message: 'ok',
+  };
 }
 
 export async function createFolder(name: string): Promise<ApiResponse<MediaFolder>> {
@@ -65,21 +75,29 @@ export async function createFolder(name: string): Promise<ApiResponse<MediaFolde
   return { code: 0, data: newFolder, message: '创建成功' };
 }
 
+export function detectMediaType(fileName: string): MediaFile['type'] {
+  const ext = fileName.split('.').pop()?.toLowerCase() || '';
+  const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'];
+  const videoExts = ['mp4', 'avi', 'mov', 'mkv', 'webm'];
+  const audioExts = ['mp3', 'wav', 'm4a', 'ogg', 'flac'];
+  if (imageExts.includes(ext)) return 'image';
+  if (videoExts.includes(ext)) return 'video';
+  if (audioExts.includes(ext)) return 'audio';
+  return 'document';
+}
+
+// Chunked upload simulation
+export const CHUNK_SIZE = 2 * 1024 * 1024; // 2MB per chunk
+
+const uploadedChunks = new Map<string, Set<number>>();
+
 export async function uploadMedia(
   file: File,
   folderId: string,
 ): Promise<ApiResponse<MediaFile>> {
   await new Promise((resolve) => setTimeout(resolve, 1200));
 
-  const ext = file.name.split('.').pop()?.toLowerCase() || '';
-  const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'];
-  const videoExts = ['mp4', 'avi', 'mov', 'mkv', 'webm'];
-  const audioExts = ['mp3', 'wav', 'm4a', 'ogg', 'flac'];
-  let type: MediaFile['type'] = 'document';
-  if (imageExts.includes(ext)) type = 'image';
-  else if (videoExts.includes(ext)) type = 'video';
-  else if (audioExts.includes(ext)) type = 'audio';
-
+  const type = detectMediaType(file.name);
   const newFile: MediaFile = {
     id: `m-${Date.now()}`,
     folderId,
@@ -99,6 +117,75 @@ export async function uploadMedia(
   folders[0].fileCount++;
 
   return { code: 0, data: newFile, message: '上传成功' };
+}
+
+// Chunked upload APIs
+
+export async function checkUploadStatus(
+  fileId: string,
+  _totalChunks: number,
+): Promise<ApiResponse<{ uploadedChunks: number[] }>> {
+  await new Promise((resolve) => setTimeout(resolve, 150));
+  const chunks = uploadedChunks.get(fileId);
+  const list = chunks ? Array.from(chunks) : [];
+  return { code: 0, data: { uploadedChunks: list }, message: 'ok' };
+}
+
+export async function uploadChunk(
+  fileId: string,
+  chunkIndex: number,
+  _totalChunks: number,
+  _chunkData: Blob,
+  _fileName: string,
+): Promise<ApiResponse<{ chunkIndex: number }>> {
+  // Simulate upload delay proportional to chunk size
+  await new Promise((resolve) => setTimeout(resolve, 200 + Math.random() * 400));
+
+  if (!uploadedChunks.has(fileId)) {
+    uploadedChunks.set(fileId, new Set());
+  }
+  uploadedChunks.get(fileId)!.add(chunkIndex);
+
+  return { code: 0, data: { chunkIndex }, message: 'ok' };
+}
+
+export async function mergeChunks(
+  fileId: string,
+  fileName: string,
+  folderId: string,
+  _totalChunks: number,
+): Promise<ApiResponse<MediaFile>> {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  // Clean up uploaded chunks
+  uploadedChunks.delete(fileId);
+
+  const type = detectMediaType(fileName);
+  const totalSize = 25_000_000 + Math.floor(Math.random() * 50_000_000); // mock size for chunked uploads
+  const newFile: MediaFile = {
+    id: `m-${Date.now()}`,
+    folderId,
+    name: fileName,
+    type,
+    size: totalSize,
+    url: '',
+    uploadDate: new Date().toISOString(),
+    width: type === 'image' ? 1920 : undefined,
+    height: type === 'image' ? 1080 : undefined,
+    duration: type === 'video' || type === 'audio' ? '03:00' : undefined,
+  };
+  files.push(newFile);
+
+  const folder = folders.find((f) => f.id === folderId);
+  if (folder) folder.fileCount++;
+  folders[0].fileCount++;
+
+  return { code: 0, data: newFile, message: '合并成功' };
+}
+
+export async function abortUpload(fileId: string): Promise<ApiResponse<null>> {
+  uploadedChunks.delete(fileId);
+  return { code: 0, data: null, message: '已取消' };
 }
 
 export async function deleteMedia(id: string): Promise<ApiResponse<null>> {

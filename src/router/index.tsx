@@ -8,6 +8,8 @@ import DeviceDetail from '../pages/device/detail';
 import VersionManagement from '../pages/version';
 import FirmwareManagement from '../pages/firmware';
 import MediaManagement from '../pages/media';
+import SlideList from '../pages/slide';
+import SlideEdit from '../pages/slide/edit';
 
 export const router = createHashRouter([
   {
@@ -49,6 +51,14 @@ export const router = createHashRouter([
       {
         path: 'media',
         element: <MediaManagement />,
+      },
+      {
+        path: 'slide',
+        element: <SlideList />,
+      },
+      {
+        path: 'slide/:id',
+        element: <SlideEdit />,
       },
     ],
   },
