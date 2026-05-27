@@ -11,6 +11,7 @@ import {
   BugOutlined,
   PictureOutlined,
   FundViewOutlined,
+  PlaySquareOutlined,
 } from '@ant-design/icons';
 import { useAuthStore } from '../stores/authStore';
 import { useAppStore } from '../stores/appStore';
@@ -47,6 +48,11 @@ const menuItems = [
     key: '/slide',
     icon: <FundViewOutlined />,
     label: 'Slide 管理',
+  },
+  {
+    key: '/playlist',
+    icon: <PlaySquareOutlined />,
+    label: '播放列表',
   },
 ];
 

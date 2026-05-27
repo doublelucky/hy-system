@@ -10,6 +10,8 @@ import FirmwareManagement from '../pages/firmware';
 import MediaManagement from '../pages/media';
 import SlideList from '../pages/slide';
 import SlideEdit from '../pages/slide/edit';
+import PlaylistManagement from '../pages/playlist';
+import PlaylistEdit from '../pages/playlist/edit';
 
 export const router = createHashRouter([
   {
@@ -59,6 +61,14 @@ export const router = createHashRouter([
       {
         path: 'slide/:id',
         element: <SlideEdit />,
+      },
+      {
+        path: 'playlist',
+        element: <PlaylistManagement />,
+      },
+      {
+        path: 'playlist/:id',
+        element: <PlaylistEdit />,
       },
     ],
   },

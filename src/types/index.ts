@@ -119,3 +119,53 @@ export interface Slide {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Playlist {
+  id: string;
+  title: string;
+  thumbnail: string;
+  size: string;
+  duration: string;
+  splitScreens: number;
+  ratio: string;
+  resolution: string;
+  screenCount: number;
+}
+
+export type TransitionType = 'none' | 'fade' | 'slide_left' | 'slide_right' | 'slide_up' | 'slide_down' | 'zoom' | 'wipe' | 'random';
+export type FitMode = 'cover' | 'contain' | 'stretch' | 'center';
+
+export const transitionLabels: Record<TransitionType, string> = {
+  none: 'None',
+  fade: 'Fade',
+  slide_left: 'Slide Left',
+  slide_right: 'Slide Right',
+  slide_up: 'Slide Up',
+  slide_down: 'Slide Down',
+  zoom: 'Zoom',
+  wipe: 'Wipe',
+  random: 'Random',
+};
+
+export const fitModeLabels: Record<FitMode, string> = {
+  cover: 'Cover',
+  contain: 'Contain',
+  stretch: 'Stretch',
+  center: 'Center',
+};
+
+export interface PlaylistItem {
+  id: string;
+  playlistId: string;
+  mediaId: string;
+  mediaName: string;
+  mediaType: MediaType;
+  duration: number; // seconds
+  transition: TransitionType;
+  transitionDuration: number; // ms
+  fitMode: FitMode;
+  sortOrder: number;
+  thumbnail?: string;
+  width?: number;
+  height?: number;
+}
